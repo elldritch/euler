@@ -5,6 +5,7 @@ Utility functions for Project Euler.
 module Util where
 
 import Data.Array.Unboxed (UArray, assocs, accumArray)
+import Data.List (group, genericLength)
 
 -- Mathematical sequences
 -- Primes
@@ -46,6 +47,29 @@ primeFactors' n = _primeFactors n primes'
 fibs :: (Integral a) => [a]
 fibs = 0 : 1 : zipWith (+) fibs (tail fibs)
 
+-- Collatz sequence
+collatz :: (Integral a) => a -> a
+collatz n
+  | even n = n `div` 2
+  | odd n = 3 * n + 1
+
+collatz' :: Int -> Int
+collatz' n
+  | even n = n `div` 2
+  | odd n = 3 * n + 1
+
+collatzSeq :: (Integral a) => a -> [a]
+collatzSeq = iterate collatz
+
+collatzSeq' :: Int -> [Int]
+collatzSeq' = iterate collatz'
+
+collatzLen :: (Integral a) => a -> a
+collatzLen n = (+ 1) . genericLength $ takeWhile (/= 1) $ collatzSeq n
+
+collatzLen' :: Int -> Int
+collatzLen' n = (+ 1) . length $ takeWhile (/= 1) $ collatzSeq' n
+
 -- Commonly used filters
 -- Palindromes
 isPalindrome :: (Show a) => a -> Bool
@@ -71,13 +95,42 @@ isPrime' n
 square :: (Integral a) => a -> a
 square n = n * n
 
--- Turn a number into a list of its digits
+-- Turn a number into a list of its digits in right-to-left order
 toDigits :: (Integral a) => a -> [a]
 toDigits 0 = []
 toDigits n = (n `mod` 10) : toDigits (n `div` 10)
 
--- Set functions
+toDigitsOrd :: (Integral a) => a -> [a]
+toDigitsOrd = reverse . toDigits
+
+-- Turn a list of digits into a number
+fromDigits :: (Integral a) => [a] -> a
+fromDigits digits = _fromDigits $ reverse digits
+
+_fromDigits :: (Integral a) => [a] -> a
+_fromDigits [] = 0
+_fromDigits (x:xs) = x + 10 * _fromDigits xs
+
+-- Compute the number of unique divisors for a number
+numDivisors :: (Integral a) => a -> a
+numDivisors n = product $ map ((+ 1) . genericLength) $ group (primeFactors n)
+
+numDivisors' :: Int -> Int
+numDivisors' n = product $ map ((+ 1) . length) $ group (primeFactors' n)
+
+-- Permutations
+choose :: (Integral a) => a -> a -> a
+choose _ 0 = 1
+choose 0 _ = 0
+choose n k = choose (n - 1) (k - 1) * n `div` k
+
+-- Commonly used functions on sets
 -- Power set of a set
 powerSet :: [a] -> [[a]]
 powerSet [] = [[]]
 powerSet (x:xs) = powerSet xs ++ map (x:) (powerSet xs)
+
+-- Commonly used functions on lists
+-- Find the index of the maximum element in a list
+maxIndex :: (Ord a, Integral b) => [a] -> b
+maxIndex xs = snd . maximum $ zip xs [0..]
