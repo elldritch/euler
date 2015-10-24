@@ -9,7 +9,7 @@ safeIndex xs i
   | i >= 0 && i < genericLength xs = Just $ xs `genericIndex` i
   | otherwise = Nothing
 
-expect :: (Integral a, Show a, Integral b, Show b) => a -> b -> SpecWith ()
+expect :: Int -> Integer -> SpecWith ()
 expect question answer = it (show question) $
                             problems `safeIndex` (question - 1) `shouldBe`
                             Just answer

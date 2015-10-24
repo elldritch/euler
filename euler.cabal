@@ -14,7 +14,11 @@ cabal-version: >=1.10
 library
   hs-source-dirs: src
   exposed-modules: Problems
-  other-modules: Util
+  other-modules:
+    Group1,
+    Group2,
+
+    Util
   build-depends:
     base,
     array
