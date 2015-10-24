@@ -18,7 +18,7 @@ data Euler = Euler { problem :: Integer
 data Action = RunAll | RunOne Integer
 
 -- Parse options into a valid Action or Nothing
-parseOptions :: (Integral a) => Euler -> Maybe Action
+parseOptions :: Euler -> Maybe Action
 parseOptions (Euler problem runAll)
   | runAll && problem /= -1 = Nothing
   | runAll = Just RunAll

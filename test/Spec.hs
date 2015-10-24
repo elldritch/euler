@@ -1,6 +1,6 @@
 import Data.List (genericLength, genericIndex)
 
-import Test.Hspec (hspec, describe, it, shouldBe, SpecWith)
+import Test.Hspec (hspec, describe, it, shouldBe, SpecWith, pending)
 
 import Problems (problems)
 
@@ -34,4 +34,4 @@ main = hspec $ do
     expect 15 137846528820
 
   describe "Utility functions" $
-    it "NO TESTS IMPLEMENTED" $ 1 `shouldBe` 1
+    it "NO TESTS IMPLEMENTED" pending
