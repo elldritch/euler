@@ -17,11 +17,15 @@ library
   other-modules:
     Group1,
     Group2,
+    Group3,
+    Group4,
 
     Util
   build-depends:
     base,
-    array
+    array,
+    split,
+    containers
   default-language: Haskell2010
 
 executable euler

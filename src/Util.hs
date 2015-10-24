@@ -43,9 +43,14 @@ primeFactors n = _primeFactors n primes
 primeFactors' :: Int -> [Int]
 primeFactors' n = _primeFactors n primes'
 
+-- Factorisation
+divisors :: (Integral a) => a -> [a]
+divisors 0 = []
+divisors n = filter (/= n) $ map product $ powerSet $ primeFactors n
+
 -- Fibonacci series
 fibs :: (Integral a) => [a]
-fibs = 0 : 1 : zipWith (+) fibs (tail fibs)
+fibs = 1 : 1 : zipWith (+) fibs (tail fibs)
 
 -- Collatz sequence
 collatz :: (Integral a) => a -> a
@@ -97,6 +102,7 @@ square n = n * n
 
 -- Factorial of a number
 factorial :: (Integral a) => a -> a
+factorial 0 = 1
 factorial 1 = 1
 factorial n = n * factorial (n - 1)
 
