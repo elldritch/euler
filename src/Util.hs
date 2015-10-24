@@ -95,6 +95,11 @@ isPrime' n
 square :: (Integral a) => a -> a
 square n = n * n
 
+-- Factorial of a number
+factorial :: (Integral a) => a -> a
+factorial 1 = 1
+factorial n = n * factorial (n - 1)
+
 -- Turn a number into a list of its digits in right-to-left order
 toDigits :: (Integral a) => a -> [a]
 toDigits 0 = []

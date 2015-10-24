@@ -32,6 +32,11 @@ main = hspec $ do
     expect 13 5537376230
     expect 14 837799
     expect 15 137846528820
+    expect 16 1366
+    expect 17 21124
+    expect 18 1074
+    expect 19 171
+    expect 20 648
 
   describe "Utility functions" $
     it "NO TESTS IMPLEMENTED" pending

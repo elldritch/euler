@@ -1,5 +1,4 @@
--- module Group2 (p11, p12, p13, p14, p15, p16, p17, p18, p19, p20) where
-module Group2 (p11, p12, p13, p14, p15) where
+module Group2 (p11, p12, p13, p14, p15, p16, p17, p18, p19, p20) where
 
 import Util
 
@@ -355,3 +354,225 @@ How many such routes are there through a 20×20 grid?
 
 p15 :: (Integral a) => a
 p15 = 40 `choose` 20
+
+{-
+2^15 = 32768 and the sum of its digits is 3 + 2 + 7 + 6 + 8 = 26.
+
+What is the sum of the digits of the number 2^1000?
+-}
+
+sumDigits :: (Integral a) => a -> a
+sumDigits = sum . toDigits
+
+p16 :: (Integral a) => a
+p16 = sumDigits $ 2 ^ 1000
+
+{-
+If the numbers 1 to 5 are written out in words: one, two, three, four, five,
+then there are 3 + 3 + 5 + 4 + 4 = 19 letters used in total.
+
+If all the numbers from 1 to 1000 (one thousand) inclusive were written out in
+words, how many letters would be used?
+
+NOTE: Do not count spaces or hyphens. For example, 342 (three hundred and
+forty-two) contains 23 letters and 115 (one hundred and fifteen) contains 20
+letters. The use of "and" when writing out numbers is in compliance with British
+usage.
+-}
+
+specialCases :: Int -> String
+specialCases n
+  | n == 0 = ""
+  | n == 1 = "one"
+  | n == 2 = "two"
+  | n == 3 = "three"
+  | n == 4 = "four"
+  | n == 5 = "five"
+  | n == 6 = "six"
+  | n == 7 = "seven"
+  | n == 8 = "eight"
+  | n == 9 = "nine"
+  | n == 10 = "ten"
+  | n == 11 = "eleven"
+  | n == 12 = "twelve"
+  | n == 13 = "thirteen"
+  | n == 14 = "fourteen"
+  | n == 15 = "fifteen"
+  | n == 16 = "sixteen"
+  | n == 17 = "seventeen"
+  | n == 18 = "eighteen"
+  | n == 19 = "nineteen"
+  | n == 20 = "twenty"
+  | n == 30 = "thirty"
+  | n == 40 = "forty"
+  | n == 50 = "fifty"
+  | n == 60 = "sixty"
+  | n == 70 = "seventy"
+  | n == 80 = "eighty"
+  | n == 90 = "ninety"
+
+wordify :: Int -> String
+wordify n
+  | n == 1000 = "one thousand"
+  | n >= 100 && n `mod` 100 == 0 = hundreds ++ " hundred"
+  | n >= 100 = hundreds ++ " hundred and " ++ wordify (n `mod` 100)
+  | n >= 20 && n `mod` 10 == 0 = specialCases n
+  | n >= 20 = specialCases ((n `div` 10) * 10) ++ "-" ++ wordify (n `mod` 10)
+  | otherwise = specialCases n
+  where
+    hundreds = specialCases (n `div` 100)
+
+p17 :: (Integral a) => a
+p17 = fromIntegral $ sum $ map (length . filter (/= '-') . filter (/= ' ') . wordify) [1..1000]
+
+{-
+By starting at the top of the triangle below and moving to adjacent numbers on
+the row below, the maximum total from top to bottom is 23.
+
+3
+7 4
+2 4 6
+8 5 9 3
+
+That is, 3 + 7 + 4 + 9 = 23.
+
+Find the maximum total from top to bottom of the triangle below:
+
+75
+95 64
+17 47 82
+18 35 87 10
+20 04 82 47 65
+19 01 23 75 03 34
+88 02 77 73 07 63 67
+99 65 04 28 06 16 70 92
+41 41 26 56 83 40 80 70 33
+41 48 72 33 47 32 37 16 94 29
+53 71 44 65 25 43 91 52 97 51 14
+70 11 33 28 77 73 17 78 39 68 17 57
+91 71 52 38 17 14 91 43 58 50 27 29 48
+63 66 04 68 89 53 67 30 73 16 69 87 40 31
+04 62 98 27 23 09 70 98 73 93 38 53 60 04 23
+
+NOTE: As there are only 16384 routes, it is possible to solve this problem by
+trying every route. However, Problem 67, is the same challenge with a triangle
+containing one-hundred rows; it cannot be solved by brute force, and requires a
+clever method! ;o)
+-}
+
+triangle' :: [[Int]]
+triangle' = [
+    [75],
+    [95, 64],
+    [17, 47, 82],
+    [18, 35, 87, 10],
+    [20, 04, 82, 47, 65],
+    [19, 01, 23, 75, 03, 34],
+    [88, 02, 77, 73, 07, 63, 67],
+    [99, 65, 04, 28, 06, 16, 70, 92],
+    [41, 41, 26, 56, 83, 40, 80, 70, 33],
+    [41, 48, 72, 33, 47, 32, 37, 16, 94, 29],
+    [53, 71, 44, 65, 25, 43, 91, 52, 97, 51, 14],
+    [70, 11, 33, 28, 77, 73, 17, 78, 39, 68, 17, 57],
+    [91, 71, 52, 38, 17, 14, 91, 43, 58, 50, 27, 29, 48],
+    [63, 66, 04, 68, 89, 53, 67, 30, 73, 16, 69, 87, 40, 31],
+    [04, 62, 98, 27, 23, 09, 70, 98, 73, 93, 38, 53, 60, 04, 23]
+  ]
+
+maxSumAt :: Int -> Int -> Int
+maxSumAt 0 0 = head $ head triangle'
+maxSumAt row col
+  | row < 0 || col < 0 = 0
+  | col > row = 0
+  | otherwise = triangle'!!row!!col + max (maxSumAt (row - 1) (col - 1))
+                                          (maxSumAt (row - 1) col)
+
+p18 :: (Integral a) => a
+p18 = fromIntegral $ maximum $ map (maxSumAt (size - 1)) [1..size]
+  where size = length triangle'
+
+{-
+You are given the following information, but you may prefer to do some research
+for yourself.
+
+    * 1 Jan 1900 was a Monday.
+    * Thirty days has September,
+      April, June and November.
+      All the rest have thirty-one,
+      Saving February alone,
+      Which has twenty-eight, rain or shine.
+      And on leap years, twenty-nine.
+    * A leap year occurs on any year evenly divisible by 4, but not on a century
+      unless it is divisible by 400.
+
+How many Sundays fell on the first of the month during the twentieth century (1
+Jan 1901 to 31 Dec 2000)?
+-}
+
+isLeapYear :: Int -> Bool
+isLeapYear year = year `mod` 4 == 0 && (year `mod` 100 /= 0 || year `mod` 400 == 0)
+
+isSunday :: Int -> Bool
+isSunday day = day `mod` 7 == 6
+
+data Month = Jan | Feb | Mar | Apr | May | Jun | Jul | Aug | Sep | Oct | Nov | Dec
+  deriving (Eq, Ord, Show)
+
+type Year = Int
+type Days = Int
+
+days :: Month -> Year -> Days
+days month year = case month of
+  Jan -> 31
+  Feb -> if isLeapYear year then 29 else 28
+  Mar -> 31
+  Apr -> 30
+  May -> 31
+  Jun -> 30
+  Jul -> 31
+  Aug -> 31
+  Sep -> 30
+  Oct -> 31
+  Nov -> 30
+  Dec -> 31
+
+next :: Month -> Year -> (Month, Year)
+next month year = case month of
+  Jan -> (Feb, year)
+  Feb -> (Mar, year)
+  Mar -> (Apr, year)
+  Apr -> (May, year)
+  May -> (Jun, year)
+  Jun -> (Jul, year)
+  Jul -> (Aug, year)
+  Aug -> (Sep, year)
+  Sep -> (Oct, year)
+  Oct -> (Nov, year)
+  Nov -> (Dec, year)
+  Dec -> (Jan, year + 1)
+
+firstOfMonthSundaysUntil :: Month -> Year -> Days
+firstOfMonthSundaysUntil endMonth endYear = _firstOfMonthSundaysUntil endMonth endYear 0 Jan 1900 0
+
+_firstOfMonthSundaysUntil :: Month -> Year -> Days -> Month -> Year -> Days -> Days
+_firstOfMonthSundaysUntil endMonth endYear elapsedDays month year sundays
+  | isSunday elapsedDays = _firstOfMonthSundaysUntil endMonth endYear elapsedDays' nextMonth nextYear (sundays + 1)
+  | month >= endMonth && year >= endYear = sundays
+  | otherwise = _firstOfMonthSundaysUntil endMonth endYear elapsedDays' nextMonth nextYear sundays
+    where (nextMonth, nextYear) = next month year
+          elapsedDays' = elapsedDays + days month year
+
+p19 :: (Integral a) => a
+p19 = fromIntegral $ firstOfMonthSundaysUntil Dec 2000 - firstOfMonthSundaysUntil Jan 1901
+
+{-
+n! means n × (n − 1) × ... × 3 × 2 × 1
+
+For example, 10! = 10 × 9 × ... × 3 × 2 × 1 = 3628800,
+and the sum of the digits in the number 10! is 3 + 6 + 2 + 8 + 8 + 0 + 0 = 27.
+
+Find the sum of the digits in the number 100!
+-}
+
+p20 :: (Integral a) => a
+p20 = sumDigits $ factorial 100
